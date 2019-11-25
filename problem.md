@@ -43,28 +43,30 @@ function generateRandomNumber () {
   return Math.floor(Math.random() * 10) + 1;
 }
 function assign10ToV1 () {
-  return new Promise(function (resolve, reject) {
-    const latency = generateRandomNumber();
-    setTimeout(() => {
-      v1 = 10;
-      resolve();
-    }, latency * 1000);
-  });
+  const latency = generateRandomNumber();
+  setTimeout(() => {
+    v1 = 10;
+  }, latency * 1000);
 }
 function assign20ToV2 () {
-  return new Promise(function (resolve, reject) {
-    const latency = generateRandomNumber();
-    setTimeout(() => {
-      v2 = 20;
-      resolve();
-    }, latency * 1000);
-  });
+  const latency = generateRandomNumber();
+  setTimeout(() => {
+    v2 = 20;
+  }, latency * 1000);
 }
 
-async function sumV1AndV2 () {
-  await Promise.all([assign10ToV1(), assign20ToV2()]);
-  let sum = v1 + v2;
-  return sum;
+function sumV1AndV2 () {
+  return new Promise((resolve, reject) => {
+    assign10ToV1();
+    assign20ToV2();
+
+    let timer = setInterval(() => {
+      if (v1 !== undefined && v2 !== undefined) {
+        clearInterval(timer);
+        resolve(v1 + v2);
+      }
+    }, 1000);
+  });
 }
 
 async function start () {
